@@ -1,0 +1,38 @@
+version: "3"
+
+networks:
+  gonet: {}
+
+volumes:
+  database-data:
+
+services:
+  postgres:
+    image: postgres:9.6.20
+    container_name: gopostgressql
+    networks:
+      - gonet
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+      - 5433:5433
+    environment:
+      - POSTGRES_USER=go
+      - POSTGRES_PASSWORD=go
+      - POSTGRES_DB=go
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: gopostgressql-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com.br"
+      PGADMIN_DEFAULT_PASSWORD: "1234"
+    networks:
+      - gonet
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+    links:
+      - postgres
